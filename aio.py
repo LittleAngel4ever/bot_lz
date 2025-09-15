@@ -43,9 +43,9 @@ def logging(api: str):
             }
             df = pd.DataFrame(data)
             if os.path.isfile(logs):
-                df.to_csv(logs, mode="a", header=False, index=False)
+                df.to_csv(logs, mode = "a", header = False, index = False)
             else:
-                df.to_csv(logs, index=False)
+                df.to_csv(logs, index = False)
             return result
         return wrapper
     return decorator
@@ -85,10 +85,10 @@ def news(url: str):
 
 # ===== Работа БОТА =====
 start_kb = ReplyKeyboardMarkup(
-    keyboard=[[KeyboardButton(text = "Старт")]], resize_keyboard=True
+    keyboard = [[KeyboardButton(text = "Старт")]], resize_keyboard = True
 )
 choice_kb = ReplyKeyboardMarkup(
-    keyboard=[
+    keyboard = [
         [KeyboardButton(text = "Погода в городе"), KeyboardButton(text = "Факт про котов"), KeyboardButton(text = "Новости")]
     ],
     resize_keyboard = True,
@@ -112,19 +112,19 @@ async def handle_messages(message: types.Message):
     else:
         await message.answer(f"Вы написали: {message.text}, я не знаю такой команды")
 
-@logging(api="weather")
+@logging(api = "weather")
 async def handle_weather(message: types.Message):
     result = weather(url1)
     await message.answer(result)
     return result
 
-@logging(api="Cats fact")
+@logging(api = "Cats fact")
 async def handle_cats(message: types.Message):
     result = f"Fun fact about cats: {cats(url2)}"
     await message.answer(result)
     return result
 
-@logging(api="news")
+@logging(api = "news")
 async def handle_news(message: types.Message):
     result = news(url3)
     await message.answer(result)
