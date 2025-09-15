@@ -18,10 +18,10 @@ bot = Bot(token=TELEGRAM_TOKEN)
 dp = Dispatcher()
 
 # ===== ЛОГЕР =====
-def logging(api: str):
-    def decorator(function):
+def logging(api: str, motion:str):
+    def decorator(func):
         async def wrapper(message: types.Message, *args, **kwargs):
-            result = await function(message, *args, **kwargs)
+            result = await func(message, *args, **kwargs)
             user_id = message.from_user.id
             api_answer = str(result)
             logs = "log.csv"
@@ -35,7 +35,7 @@ def logging(api: str):
             data = {
                 "Unic_ID": [unic_id],
                 "User_id": [user_id],
-                "Motion": ["Button"],
+                "Motion": [motion],
                 "API": [api],
                 "Date": [day_act],
                 "Time": [time_act],
@@ -43,10 +43,12 @@ def logging(api: str):
             }
             df = pd.DataFrame(data)
             if os.path.isfile(logs):
-                df.to_csv(logs, mode = "a", header = False, index = False)
+                df.to_csv(logs, mode="a", header=False, index=False)
             else:
-                df.to_csv(logs, index = False)
+                df.to_csv(logs, index=False)
+
             return result
+
         return wrapper
     return decorator
 
@@ -85,24 +87,23 @@ def news(url: str):
 
 # ===== Работа БОТА =====
 start_kb = ReplyKeyboardMarkup(
-    keyboard = [[KeyboardButton(text = "Старт")]], resize_keyboard = True
+    keyboard=[[KeyboardButton(text="Старт")]], resize_keyboard=True
 )
 choice_kb = ReplyKeyboardMarkup(
-    keyboard = [
-        [KeyboardButton(text = "Погода в городе"), KeyboardButton(text = "Факт про котов"), KeyboardButton(text = "Новости")]
+    keyboard=[
+        [KeyboardButton(text="Погода в городе"), KeyboardButton(text="Факт про котов"), KeyboardButton(text="Новости")]
     ],
-    resize_keyboard = True,
+    resize_keyboard=True,
 )
 
 @dp.message(Command(commands = ["start"]))
 async def cmd_start(message: types.Message):
-    await message.answer("Добро пожаловать!", reply_markup = start_kb)
+    await message.answer("Добро пожаловать!", reply_markup=start_kb)
 
 @dp.message()
-@logging(api = "Keyboard Input", motion = "Text")
 async def handle_messages(message: types.Message):
     if message.text == "Старт":
-        await message.answer("Кого ты выберешь?", reply_markup = choice_kb)
+        await message.answer("Кого ты выберешь?", reply_markup=choice_kb)
     elif message.text == "Погода в городе":
         return await handle_weather(message)
     elif message.text == "Факт про котов":
@@ -110,25 +111,30 @@ async def handle_messages(message: types.Message):
     elif message.text == "Новости":
         return await handle_news(message)
     else:
-        await message.answer(f"Вы написали: {message.text}, я не знаю такой команды")
+        return await handle_keyboard(message)
 
-@logging(api = "weather")
+@logging(api="weather", motion="Погода в городе")
 async def handle_weather(message: types.Message):
     result = weather(url1)
     await message.answer(result)
     return result
 
-@logging(api = "Cats fact")
+@logging(api="Cats fact", motion="Факт про котов")
 async def handle_cats(message: types.Message):
     result = f"Fun fact about cats: {cats(url2)}"
     await message.answer(result)
     return result
 
-@logging(api = "news")
+@logging(api="news", motion="Новости")
 async def handle_news(message: types.Message):
     result = news(url3)
     await message.answer(result)
     return result
+
+@logging(api='NONE', motion='keyboard')
+async def handle_keyboard(message: types.Message):
+    await message.answer(f"Вы написали: {message.text}, я не знаю такой команды")
+    return 'NONE'
 
 # ==== ЗАПУСК ====
 async def main():
