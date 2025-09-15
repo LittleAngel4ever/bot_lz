@@ -19,9 +19,9 @@ dp = Dispatcher()
 
 # ===== ЛОГЕР =====
 def logging(api: str):
-    def decorator(func):
+    def decorator(function):
         async def wrapper(message: types.Message, *args, **kwargs):
-            result = await func(message, *args, **kwargs)
+            result = await function(message, *args, **kwargs)
             user_id = message.from_user.id
             api_answer = str(result)
             logs = "log.csv"
