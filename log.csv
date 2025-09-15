@@ -1,0 +1,5 @@
+Unic_ID,User_id,Motion,API,Date,Time,API_answer
+
+0,1731738522,Button,weather,2025-09-15,10:26:36.388206,"2025-09-15: Средняя температура: 13°C, Light drizzle"
+1,1731738522,Button,Cats fact,2025-09-15,10:26:38.942761,Fun fact about cats: Cats have 3 eyelids.
+2,1731738522,Button,news,2025-09-15,10:26:41.217142,Курс: 1 RUB = 0.011909 USD
