@@ -101,6 +101,7 @@ async def cmd_start(message: types.Message):
     await message.answer("Добро пожаловать!", reply_markup=start_kb)
 
 @dp.message()
+@logging(api = "Keyboard Input")
 async def handle_messages(message: types.Message):
     if message.text == "Старт":
         await message.answer("Кого ты выберешь?", reply_markup=choice_kb)
