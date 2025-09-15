@@ -46,9 +46,7 @@ def logging(api: str):
                 df.to_csv(logs, mode="a", header=False, index=False)
             else:
                 df.to_csv(logs, index=False)
-
             return result
-
         return wrapper
     return decorator
 
@@ -87,24 +85,24 @@ def news(url: str):
 
 # ===== Работа БОТА =====
 start_kb = ReplyKeyboardMarkup(
-    keyboard=[[KeyboardButton(text="Старт")]], resize_keyboard=True
+    keyboard=[[KeyboardButton(text = "Старт")]], resize_keyboard=True
 )
 choice_kb = ReplyKeyboardMarkup(
     keyboard=[
-        [KeyboardButton(text="Погода в городе"), KeyboardButton(text="Факт про котов"), KeyboardButton(text="Новости")]
+        [KeyboardButton(text = "Погода в городе"), KeyboardButton(text = "Факт про котов"), KeyboardButton(text = "Новости")]
     ],
-    resize_keyboard=True,
+    resize_keyboard = True,
 )
 
 @dp.message(Command(commands = ["start"]))
 async def cmd_start(message: types.Message):
-    await message.answer("Добро пожаловать!", reply_markup=start_kb)
+    await message.answer("Добро пожаловать!", reply_markup = start_kb)
 
 @dp.message()
 @logging(api = "Keyboard Input", motion = "Text")
 async def handle_messages(message: types.Message):
     if message.text == "Старт":
-        await message.answer("Кого ты выберешь?", reply_markup=choice_kb)
+        await message.answer("Кого ты выберешь?", reply_markup = choice_kb)
     elif message.text == "Погода в городе":
         return await handle_weather(message)
     elif message.text == "Факт про котов":
